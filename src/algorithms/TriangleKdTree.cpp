@@ -62,10 +62,10 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     Point bb = bbox.max() - bbox.min();
     Scalar length = bb[0];
     int axis = 0;
-    if (bb[1] > length)
+    if(bb[1] > length)
         length = bb[(axis = 1)];
-    if (bb[2] > length)
-        length = bb[(axis = 2)];
+    if(bb[2] > length)
+        bb[(axis = 2)];
 
 #if 1
     // split in the middle
