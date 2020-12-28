@@ -5,6 +5,10 @@
 #include "pmp/algorithms/SurfaceNormals.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 SurfaceCurvature::SurfaceCurvature(SurfaceMesh& mesh) : mesh_(mesh)
@@ -47,7 +51,7 @@ void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
             p0 = mesh_.position(v);
 
             // Voronoi area
-            area = voronoi_area(mesh_, v);
+            area = Scalar(voronoi_area(mesh_, v));
 
             // Laplace & angle sum
             for (auto vh : mesh_.halfedges(v))
@@ -56,7 +60,7 @@ void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
                 p2 = mesh_.position(
                     mesh_.to_vertex(mesh_.ccw_rotated_halfedge(vh)));
 
-                weight = cotan[mesh_.edge(vh)];
+                weight = Scalar(cotan[mesh_.edge(vh)]);
                 sum_weights += weight;
                 laplace += weight * p1;
 
@@ -64,7 +68,7 @@ void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
                 p1.normalize();
                 p2 -= p0;
                 p2.normalize();
-                sum_angles += Scalar(std::acos(clamp_cos(dot(p1, p2))));
+                sum_angles += Scalar(std::acos(clamp_cos(double(dot(p1, p2)))));
             }
             laplace -= sum_weights * mesh_.position(v);
             laplace /= Scalar(2.0) * area;
@@ -93,14 +97,14 @@ void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
                 v = mesh_.to_vertex(vh);
                 if (!mesh_.is_boundary(v))
                 {
-                    weight = cotan[mesh_.edge(vh)];
+                    weight = Scalar(cotan[mesh_.edge(vh)]);
                     sum_weights += weight;
                     kmin += weight * min_curvature_[v];
                     kmax += weight * max_curvature_[v];
                 }
             }
 
-            if (sum_weights)
+            if (sum_weights>Scalar(0.0))
             {
                 kmin /= sum_weights;
                 kmax /= sum_weights;
@@ -256,8 +260,8 @@ void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
 
         assert(kmin <= kmax);
 
-        min_curvature_[v] = kmin;
-        max_curvature_[v] = kmax;
+        min_curvature_[v] = Scalar(kmin);
+        max_curvature_[v] = Scalar(kmax);
     }
 
     // clean-up properties
@@ -303,13 +307,13 @@ void SurfaceCurvature::smooth_curvatures(unsigned int iterations)
                 if (vfeature && vfeature[tv])
                     continue;
 
-                weight = std::max(0.0, cotan_weight(mesh_, mesh_.edge(vh)));
+                weight = Scalar(std::max(0.0, cotan_weight(mesh_, mesh_.edge(vh))));
                 sum_weights += weight;
                 kmin += weight * min_curvature_[tv];
                 kmax += weight * max_curvature_[tv];
             }
 
-            if (sum_weights)
+            if (sum_weights>Scalar(0.0))
             {
                 min_curvature_[v] = kmin / sum_weights;
                 max_curvature_[v] = kmax / sum_weights;
@@ -367,7 +371,7 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
         values.push_back(curvatures[v]);
     }
     std::sort(values.begin(), values.end());
-    unsigned int n = values.size() - 1;
+    unsigned int n = uint32_t(values.size()) - 1;
 
     // clamp upper/lower 5%
     unsigned int i = n / 20;

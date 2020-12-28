@@ -7,6 +7,10 @@
 
 #include <limits>
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2)
@@ -219,7 +223,7 @@ Point laplace(const SurfaceMesh& mesh, Vertex v)
 
         for (auto h : mesh.halfedges(v))
         {
-            weight = cotan_weight(mesh, mesh.edge(h));
+            weight = Scalar(cotan_weight(mesh, mesh.edge(h)));
             sumWeights += weight;
             laplace += weight * mesh.position(mesh.to_vertex(h));
         }
@@ -248,7 +252,7 @@ Scalar angle_sum(const SurfaceMesh& mesh, Vertex v)
             const Point p01 = normalize(p1 - p0);
             const Point p02 = normalize(p2 - p0);
 
-            Scalar cos_angle = clamp_cos(dot(p01, p02));
+            Scalar cos_angle = Scalar(clamp_cos(double(dot(p01, p02))));
 
             angles += std::acos(cos_angle);
         }
@@ -261,7 +265,7 @@ VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v)
 {
     VertexCurvature c;
 
-    const Scalar area = voronoi_area(mesh, v);
+    const Scalar area = Scalar(voronoi_area(mesh, v));
     if (area > std::numeric_limits<Scalar>::min())
     {
         c.mean = Scalar(0.5) * norm(laplace(mesh, v));

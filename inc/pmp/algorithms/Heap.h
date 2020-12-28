@@ -4,6 +4,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 namespace pmp {
 
@@ -22,7 +23,7 @@ public:
     Heap(const HeapInterface& i) : HeapVector(), interface_(i) {}
 
     //! Destructor.
-    ~Heap(){};
+    ~Heap(){}
 
     //! clear the heap
     void clear() { HeapVector::clear(); }
@@ -34,7 +35,7 @@ public:
     size_t size() { return HeapVector::size(); }
 
     //! reserve space for N entries
-    void reserve(unsigned int n) { HeapVector::reserve(n); }
+    void reserve(uint32_t n) { HeapVector::reserve(n); }
 
     //! reset heap position to -1 (not in heap)
     void reset_heap_position(HeapEntry h)
@@ -52,7 +53,7 @@ public:
     void insert(HeapEntry h)
     {
         This::push_back(h);
-        upheap(size() - 1);
+        upheap(uint32_t(size() - 1));
     }
 
     //! get the first entry
@@ -69,7 +70,7 @@ public:
         interface_.set_heap_position(entry(0), -1);
         if (size() > 1)
         {
-            entry(0, entry(size() - 1));
+            entry(0, entry(uint32_t(size() - 1)));
             HeapVector::resize(size() - 1);
             downheap(0);
         }
@@ -92,7 +93,7 @@ public:
 
         else
         {
-            entry(pos, entry(size() - 1)); // move last elem to pos
+            entry(pos, entry(uint32_t(size() - 1))); // move last elem to pos
             HeapVector::resize(size() - 1);
             downheap(pos);
             upheap(pos);
@@ -114,7 +115,7 @@ public:
     bool check()
     {
         bool ok(true);
-        unsigned int i, j;
+        uint32_t i, j;
         for (i = 0; i < size(); ++i)
         {
             if (((j = left(i)) < size()) &&
@@ -138,10 +139,10 @@ private:
     typedef std::vector<HeapEntry> HeapVector;
 
     //! Upheap. Establish heap property.
-    void upheap(unsigned int idx)
+    void upheap(uint32_t idx)
     {
         HeapEntry h = entry(idx);
-        unsigned int parentIdx;
+        uint32_t parentIdx;
 
         while ((idx > 0) && interface_.less(h, entry(parentIdx = parent(idx))))
         {
@@ -153,11 +154,11 @@ private:
     }
 
     //! Downheap. Establish heap property.
-    void downheap(unsigned int idx)
+    void downheap(uint32_t idx)
     {
         HeapEntry h = entry(idx);
-        unsigned int childIdx;
-        unsigned int s = size();
+        uint32_t childIdx;
+        uint32_t s = uint32_t(size());
 
         while (idx < s)
         {
@@ -180,14 +181,14 @@ private:
     }
 
     //! Get the entry at index idx
-    inline HeapEntry entry(unsigned int idx)
+    inline HeapEntry entry(uint32_t idx)
     {
         assert(idx < size());
         return (This::operator[](idx));
     }
 
     //! Set entry H to index idx and update H's heap position.
-    inline void entry(unsigned int idx, HeapEntry h)
+    inline void entry(uint32_t idx, HeapEntry h)
     {
         assert(idx < size());
         This::operator[](idx) = h;
@@ -195,13 +196,13 @@ private:
     }
 
     //! Get parent's index
-    inline unsigned int parent(unsigned int i) { return (i - 1) >> 1; }
+    inline uint32_t parent(uint32_t i) { return (i - 1) >> 1; }
 
     //! Get left child's index
-    inline unsigned int left(unsigned int i) { return (i << 1) + 1; }
+    inline uint32_t left(uint32_t i) { return (i << 1) + 1; }
 
     //! Get right child's index
-    inline unsigned int right(unsigned int i) { return (i << 1) + 2; }
+    inline uint32_t right(uint32_t i) { return (i << 1) + 2; }
 
     //! Instance of HeapInterface
     HeapInterface interface_;

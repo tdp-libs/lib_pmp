@@ -1230,8 +1230,8 @@ void SurfaceMesh::delete_face(Face f)
 
 void SurfaceMesh::garbage_collection()
 {
-    int i, i0, i1, nV(vertices_size()), nE(edges_size()), nH(halfedges_size()),
-        nF(faces_size());
+    int i, i0, i1, nV{int(vertices_size())}, nE{int(edges_size())}, nH{int(halfedges_size())},
+        nF{int(faces_size())};
 
     Vertex v;
     Halfedge h;

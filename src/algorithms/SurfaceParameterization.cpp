@@ -10,6 +10,10 @@
 
 #include "pmp/algorithms/DifferentialGeometry.h"
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 SurfaceParameterization::SurfaceParameterization(SurfaceMesh& mesh)
@@ -54,7 +58,7 @@ bool SurfaceParameterization::setup_boundary_constraints()
     } while (hh != mesh_.halfedge(vh));
 
     // map boundary loop to unit circle in texture domain
-    unsigned int i, n = loop.size();
+    unsigned int i, n = uint32_t(loop.size());
     Scalar angle, l, length;
     TexCoord t;
 
@@ -100,8 +104,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     // compute Laplace weight per edge: cotan or uniform
     for (auto e : mesh_.edges())
     {
-        eweight[e] =
-            use_uniform_weights ? 1.0 : std::max(0.0, cotan_weight(mesh_, e));
+        eweight[e] = Scalar(use_uniform_weights ? 1.0 : std::max(0.0, cotan_weight(mesh_, e)));
     }
 
     // collect free (non-boundary) vertices in array free_vertices[]
@@ -119,7 +122,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     }
 
     // setup matrix A and rhs B
-    const unsigned int n = free_vertices.size();
+    const unsigned int n = uint32_t(free_vertices.size());
     Eigen::SparseMatrix<double> A(n, n);
     Eigen::MatrixXd B(n, 2);
     std::vector<Eigen::Triplet<double>> triplets;
@@ -305,15 +308,15 @@ void SurfaceParameterization::lscm()
     {
         if (!locked[v])
         {
-            idx[v] = i++;
+            idx[v] = int(i++);
             free_vertices.push_back(v);
         }
     }
 
     // build matrix and rhs
-    const unsigned int nv2 = 2 * mesh_.n_vertices();
-    const unsigned int nv = mesh_.n_vertices();
-    const unsigned int n = free_vertices.size();
+    const unsigned int nv2 = uint32_t(2 * mesh_.n_vertices());
+    const unsigned int nv = uint32_t(mesh_.n_vertices());
+    const unsigned int n = uint32_t(free_vertices.size());
     Vertex vi, vj;
     Halfedge hh;
     double si, sj0, sj1, sign;
@@ -354,8 +357,8 @@ void SurfaceParameterization::lscm()
                     const dvec2& wj = weight[h];
                     const dvec2& wi = weight[mesh_.prev_halfedge(h)];
 
-                    sj0 += sign * wi[c0] * wj[0] + wi[c1] * wj[1];
-                    sj1 += -sign * wi[c0] * wj[1] + wi[c1] * wj[0];
+                    sj0 += sign * wi[uint32_t(c0)] * wj[0] + wi[uint32_t(c1)] * wj[1];
+                    sj1 += -sign * wi[uint32_t(c0)] * wj[1] + wi[uint32_t(c1)] * wj[0];
                     si += wi[0] * wi[0] + wi[1] * wi[1];
                 }
 
@@ -365,15 +368,15 @@ void SurfaceParameterization::lscm()
                     const dvec2& wi = weight[h];
                     const dvec2& wj = weight[mesh_.prev_halfedge(h)];
 
-                    sj0 += sign * wi[c0] * wj[0] + wi[c1] * wj[1];
-                    sj1 += -sign * wi[c0] * wj[1] + wi[c1] * wj[0];
+                    sj0 += sign * wi[uint32_t(c0)] * wj[0] + wi[uint32_t(c1)] * wj[1];
+                    sj1 += -sign * wi[uint32_t(c0)] * wj[1] + wi[uint32_t(c1)] * wj[0];
                     si += wi[0] * wi[0] + wi[1] * wi[1];
                 }
 
                 if (!locked[vj])
                 {
                     triplets.emplace_back(row, idx[vj], sj0);
-                    triplets.emplace_back(row, idx[vj] + n, sj1);
+                    triplets.emplace_back(row, uint32_t(idx[vj]) + n, sj1);
                 }
                 else
                 {
@@ -382,7 +385,7 @@ void SurfaceParameterization::lscm()
                 }
             }
 
-            triplets.emplace_back(row, idx[vi] + (i < nv ? 0 : n), 0.5 * si);
+            triplets.emplace_back(row, uint32_t(idx[vi]) + (i < nv ? 0 : n), 0.5 * si);
 
             ++row;
         }
@@ -403,7 +406,7 @@ void SurfaceParameterization::lscm()
         // copy solution
         for (i = 0; i < n; ++i)
         {
-            tex[free_vertices[i]] = TexCoord(x[i], x[i + n]);
+            tex[free_vertices[i]] = TexCoord(Scalar(x[i]), Scalar(x[i + n]));
         }
     }
 

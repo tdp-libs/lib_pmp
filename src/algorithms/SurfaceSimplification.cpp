@@ -9,6 +9,10 @@
 #include "pmp/algorithms/DistancePointTriangle.h"
 #include "pmp/algorithms/SurfaceNormals.h"
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
@@ -41,7 +45,7 @@ SurfaceSimplification::~SurfaceSimplification()
 }
 
 void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
-                                       unsigned int max_valence,
+                                       uint32_t max_valence,
                                        Scalar normal_deviation,
                                        Scalar hausdorff_error)
 {
@@ -111,7 +115,7 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
     }
 
     // initialize normal cones
-    if (normal_deviation_)
+    if(normal_deviation_ > Scalar(0.0))
     {
         for (auto f : mesh_.faces())
         {
@@ -120,7 +124,7 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
     }
 
     // initialize faces' point list
-    if (hausdorff_error_)
+    if (hausdorff_error_ > Scalar(0.0))
     {
         for (auto f : mesh_.faces())
         {
@@ -131,7 +135,7 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
     initialized_ = true;
 }
 
-void SurfaceSimplification::simplify(unsigned int n_vertices)
+void SurfaceSimplification::simplify(uint32_t n_vertices)
 {
     if (!mesh_.is_triangle_mesh())
     {
@@ -143,7 +147,7 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
     if (!initialized_)
         initialize();
 
-    unsigned int nv(mesh_.n_vertices());
+    uint32_t nv = uint32_t(mesh_.n_vertices());
 
     std::vector<Vertex> one_ring;
     std::vector<Vertex>::iterator or_it, or_end;
@@ -158,7 +162,7 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
     // build priority queue
     HeapInterface hi(vpriority_, heap_pos_);
     queue_ = new PriorityQueue(hi);
-    queue_->reserve(mesh_.n_vertices());
+    queue_->reserve(uint32_t(mesh_.n_vertices()));
     for (auto v : mesh_.vertices())
     {
         queue_->reset_heap_position(v);
@@ -287,9 +291,9 @@ bool SurfaceSimplification::is_collapse_legal(const CollapseData& cd)
     // check maximal valence
     if (max_valence_ > 0)
     {
-        unsigned int val0 = mesh_.valence(cd.v0);
-        unsigned int val1 = mesh_.valence(cd.v1);
-        unsigned int val = val0 + val1 - 1;
+        uint32_t val0 = uint32_t(mesh_.valence(cd.v0));
+        uint32_t val1 = uint32_t(mesh_.valence(cd.v1));
+        uint32_t val = val0 + val1 - 1;
         if (cd.fl.is_valid())
             --val;
         if (cd.fr.is_valid())
@@ -444,7 +448,7 @@ float SurfaceSimplification::priority(const CollapseData& cd)
     // computer quadric error metric
     Quadric Q = vquadric_[cd.v0];
     Q += vquadric_[cd.v1];
-    return Q(vpoint_[cd.v1]);
+    return float(Q(vpoint_[cd.v1]));
 }
 
 void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
@@ -453,7 +457,7 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
     vquadric_[cd.v1] += vquadric_[cd.v0];
 
     // update normal cones
-    if (normal_deviation_)
+    if (normal_deviation_>Scalar(0.0))
     {
         for (auto f : mesh_.faces(cd.v1))
         {

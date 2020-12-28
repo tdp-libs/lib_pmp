@@ -97,7 +97,7 @@ bool SurfaceHoleFilling::triangulate_hole(Halfedge _h)
 
         hole_.push_back(h);
     } while ((h = mesh_.next_halfedge(h)) != _h);
-    const int n = hole_.size();
+    const int n = int(hole_.size());
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
@@ -212,7 +212,7 @@ SurfaceHoleFilling::Weight SurfaceHoleFilling::compute_weight(int _i, int _j,
 
 void SurfaceHoleFilling::refine()
 {
-    const int n = hole_.size();
+    const int n = int(hole_.size());
     Scalar l, lmin, lmax;
 
     // compute target edge length
@@ -332,10 +332,10 @@ void SurfaceHoleFilling::flip_edges()
                 v1 = mesh_.to_vertex(h);
                 v3 = mesh_.to_vertex(mesh_.next_halfedge(h));
 
-                val0 = mesh_.valence(v0);
-                val1 = mesh_.valence(v1);
-                val2 = mesh_.valence(v2);
-                val3 = mesh_.valence(v3);
+                val0 = int(mesh_.valence(v0));
+                val1 = int(mesh_.valence(v1));
+                val2 = int(mesh_.valence(v2));
+                val3 = int(mesh_.valence(v3));
 
                 val_opt0 = (mesh_.is_boundary(v0) ? 4 : 6);
                 val_opt1 = (mesh_.is_boundary(v1) ? 4 : 6);
@@ -384,11 +384,11 @@ void SurfaceHoleFilling::relaxation()
     {
         if (!vlocked_[v])
         {
-            idx[v] = vertices.size();
+            idx[v] = int(vertices.size());
             vertices.push_back(v);
         }
     }
-    const int n = vertices.size();
+    const int n = int(vertices.size());
 
     // collect constraints
     std::vector<Vertex> constraints;
@@ -404,14 +404,14 @@ void SurfaceHoleFilling::relaxation()
     {
         constraints.push_back(mesh_.to_vertex(h));
     }
-    const int m = constraints.size();
+    const int m = int(constraints.size());
 
     // setup matrix & rhs
     Eigen::MatrixXd B(m, 3);
     std::vector<Triplet> triplets;
     for (int i = 0; i < m; ++i)
     {
-        Vertex v = constraints[i];
+        Vertex v = constraints[size_t(i)];
         Point b(0, 0, 0);
         Scalar c(0);
 
@@ -448,7 +448,7 @@ void SurfaceHoleFilling::relaxation()
     // copy solution to mesh vertices
     for (int i = 0; i < n; ++i)
     {
-        points_[vertices[i]] = X.row(i);
+        points_[vertices[size_t(i)]] = X.row(i);
     }
 
     // clean up

@@ -3,6 +3,10 @@
 
 #include "pmp/algorithms/SurfaceSubdivision.h"
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 SurfaceSubdivision::SurfaceSubdivision(SurfaceMesh& mesh) : mesh_(mesh)
@@ -118,7 +122,7 @@ void SurfaceSubdivision::catmull_clark()
         {
             // weights from SIGGRAPH paper "Subdivision Surfaces in Character Animation"
 
-            const Scalar k = mesh_.valence(v);
+            const Scalar k = Scalar(mesh_.valence(v));
             Point p(0, 0, 0);
 
             for (auto vv : mesh_.vertices(v))
@@ -349,9 +353,9 @@ void SurfaceSubdivision::loop()
 void SurfaceSubdivision::sqrt3()
 {
     // reserve memory
-    int nv = mesh_.n_vertices();
-    int ne = mesh_.n_edges();
-    int nf = mesh_.n_faces();
+    auto nv = mesh_.n_vertices();
+    auto ne = mesh_.n_edges();
+    auto nf = mesh_.n_faces();
     mesh_.reserve(nv + nf, ne + 3 * nf, 3 * nf);
 
     auto points = mesh_.vertex_property<Point>("v:point");
@@ -366,7 +370,7 @@ void SurfaceSubdivision::sqrt3()
     {
         if (!mesh_.is_boundary(v))
         {
-            Scalar n = mesh_.valence(v);
+            Scalar n = Scalar(mesh_.valence(v));
             Scalar alpha = (Scalar(4.0) - Scalar(2.0) * std::cos(Scalar(2.0) * Scalar(M_PI) / n)) / Scalar(9.0);
             Point p(0, 0, 0);
 

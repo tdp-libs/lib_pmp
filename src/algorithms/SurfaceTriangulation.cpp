@@ -43,7 +43,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
     } while ((h = mesh_.next_halfedge(h)) != h0);
 
     // do we have at least four vertices?
-    const int n = halfedges_.size();
+    const int n = int(halfedges_.size());
     if (n <= 3)
         return;
 

@@ -3,6 +3,10 @@
 
 #include "pmp/algorithms/SurfaceGeodesic.h"
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, bool use_virtual_edges)
@@ -31,7 +35,7 @@ void SurfaceGeodesic::find_virtual_edges()
     Scalar f, alpha, beta, tan_beta;
 
     const Scalar one(1.0), minus_one(-1.0);
-    const Scalar max_angle = 90.0 / 180.0 * M_PI;
+    const Scalar max_angle = Scalar(90.0 / 180.0 * M_PI);
     const Scalar max_angle_cos = cos(max_angle);
 
     virtual_edges_.clear();
@@ -57,8 +61,7 @@ void SurfaceGeodesic::find_virtual_edges()
                 if (dot(d0, d1) < max_angle_cos)
                 {
                     // compute angles
-                    alpha = 0.5 * acos(std::min(
-                                      one, std::max(minus_one, dot(d0, d1))));
+                    alpha = Scalar(0.5) * std::acos(std::min(one, std::max(minus_one, dot(d0, d1))));
                     beta = max_angle - alpha;
                     tan_beta = tan(beta);
 
@@ -375,8 +378,8 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         A = mesh_.position(v0);
         B = mesh_.position(v1);
         C = mesh_.position(v2);
-        TA = distance_[v0];
-        TB = distance_[v1];
+        TA = double(distance_[v0]);
+        TB = double(distance_[v1]);
         a = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(B, C) : r1;
         b = r0 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r0;
     }
@@ -385,8 +388,8 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         A = mesh_.position(v1);
         B = mesh_.position(v0);
         C = mesh_.position(v2);
-        TA = distance_[v1];
-        TB = distance_[v0];
+        TA = double(distance_[v1]);
+        TB = double(distance_[v0]);
         a = r0 == std::numeric_limits<Scalar>::max() ? pmp::distance(B, C) : r0;
         b = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r1;
     }
@@ -395,9 +398,9 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
     const double dykstra = std::min(TA + b, TB + a);
 
     // obtuse angle -> fall back to Dykstra
-    const double c = dot(normalize(A - C), normalize(B - C)); // cosine
+    const double c = double(dot(normalize(A - C), normalize(B - C))); // cosine
     if (c < 0.0)
-        return dykstra;
+        return Scalar(dykstra);
 
     // Kimmel: solve quadratic equation
     const double u = TB - TA;
@@ -413,12 +416,12 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         const double q = b * (t - u) / t;
         if ((u < t) && (a * c < q) && (q < a / c))
         {
-            return TA + t;
+            return Scalar(TA + t);
         }
     }
 
     // use Dykstra as fall-back
-    return dykstra;
+    return Scalar(dykstra);
 }
 
 void SurfaceGeodesic::distance_to_texture_coordinates()

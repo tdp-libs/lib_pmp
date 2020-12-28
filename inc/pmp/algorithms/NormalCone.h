@@ -7,6 +7,10 @@
 
 #include <cmath>
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 //! \brief A class implementing a normal cone.
@@ -46,7 +50,7 @@ public:
         // axes point in opposite directions
         else if (dp < Scalar(-0.99999))
         {
-            angle_ = 2 * M_PI;
+            angle_ = Scalar(2) * Scalar(M_PI);
         }
 
         else

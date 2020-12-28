@@ -108,7 +108,7 @@ void SurfaceFairing::fair(unsigned int k)
     {
         if (!vlocked_[v])
         {
-            idx_[v] = vertices.size();
+            idx_[v] = int(vertices.size());
             vertices.push_back(v);
         }
     }
@@ -122,7 +122,7 @@ void SurfaceFairing::fair(unsigned int k)
     }
 
     // construct matrix & rhs
-    const unsigned int n = vertices.size();
+    const unsigned int n = uint32_t(vertices.size());
     SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
     dvec3 b;

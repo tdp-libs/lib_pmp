@@ -1493,7 +1493,7 @@ public:
     //! returns end iterator for vertices
     VertexIterator vertices_end() const
     {
-        return VertexIterator(Vertex(vertices_size()), this);
+        return VertexIterator(Vertex(IndexType(vertices_size())), this);
     }
 
     //! returns vertex container for C++11 range-based for-loops
@@ -1511,7 +1511,7 @@ public:
     //! returns end iterator for halfedges
     HalfedgeIterator halfedges_end() const
     {
-        return HalfedgeIterator(Halfedge(halfedges_size()), this);
+        return HalfedgeIterator(Halfedge(IndexType(halfedges_size())), this);
     }
 
     //! returns halfedge container for C++11 range-based for-loops
@@ -1526,7 +1526,7 @@ public:
     //! returns end iterator for edges
     EdgeIterator edges_end() const
     {
-        return EdgeIterator(Edge(edges_size()), this);
+        return EdgeIterator(Edge(IndexType(edges_size())), this);
     }
 
     //! returns edge container for C++11 range-based for-loops
@@ -1553,7 +1553,7 @@ public:
     //! returns end iterator for faces
     FaceIterator faces_end() const
     {
-        return FaceIterator(Face(faces_size()), this);
+        return FaceIterator(Face(IndexType(faces_size())), this);
     }
 
     //! returns face container for C++11 range-based for-loops
@@ -1799,7 +1799,7 @@ private:
             return Vertex();
         }
         vprops_.push_back();
-        return Vertex(vertices_size() - 1);
+        return Vertex(IndexType(vertices_size()) - 1);
     }
 
     //! allocate a new edge, resize edge and halfedge properties accordingly.
@@ -1818,8 +1818,8 @@ private:
         hprops_.push_back();
         hprops_.push_back();
 
-        Halfedge h0(halfedges_size() - 2);
-        Halfedge h1(halfedges_size() - 1);
+        Halfedge h0(IndexType(halfedges_size()) - 2);
+        Halfedge h1(IndexType(halfedges_size()) - 1);
 
         set_vertex(h0, end);
         set_vertex(h1, start);
@@ -1838,7 +1838,7 @@ private:
         }
 
         fprops_.push_back();
-        return Face(faces_size() - 1);
+        return Face(IndexType(faces_size()) - 1);
     }
 
     //!@}

@@ -30,11 +30,11 @@ public:
 
     //! Initialize with given parameters.
     void initialize(Scalar aspect_ratio = 0.0, Scalar edge_length = 0.0,
-                    unsigned int max_valence = 0, Scalar normal_deviation = 0.0,
+                    uint32_t max_valence = 0, Scalar normal_deviation = 0.0,
                     Scalar hausdorff_error = 0.0);
 
     //! Simplify mesh to \p n_vertices.
-    void simplify(unsigned int n_vertices);
+    void simplify(uint32_t n_vertices);
 
 private:
     // Store data for an halfedge collapse
@@ -134,7 +134,7 @@ private:
     Scalar hausdorff_error_;
     Scalar aspect_ratio_;
     Scalar edge_length_;
-    unsigned int max_valence_;
+    uint32_t max_valence_;
 };
 
 } // namespace pmp

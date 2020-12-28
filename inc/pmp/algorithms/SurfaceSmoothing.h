@@ -21,7 +21,7 @@ public:
 
     //! Perform \p iters iterations of explicit Laplacian smoothing.
     //! Decide whether to use uniform Laplacian or cotan Laplacian (default: cotan).
-    void explicit_smoothing(unsigned int iters = 10,
+    void explicit_smoothing(uint32_t iters = 10,
                             bool use_uniform_laplace = false);
 
     //! Perform implicit Laplacian smoothing with \p timestep.
@@ -51,8 +51,8 @@ private:
 
     // remember for how many vertices/edges we computed weights
     // recompute if numbers change (i.e. mesh has changed)
-    unsigned int how_many_edge_weights_;
-    unsigned int how_many_vertex_weights_;
+    uint32_t how_many_edge_weights_;
+    uint32_t how_many_vertex_weights_;
 };
 
 } // namespace pmp

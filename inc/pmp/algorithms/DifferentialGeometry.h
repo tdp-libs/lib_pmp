@@ -46,7 +46,7 @@ inline Scalar cos(const Point& v0, const Point& v1)
 //! compute cotangent of angle between two (un-normalized) vectors
 inline Scalar cotan(const Point& v0, const Point& v1)
 {
-    return clamp_cot(dot(v0, v1) / norm(cross(v0, v1)));
+    return Scalar(clamp_cot(double(dot(v0, v1))) / double(norm(cross(v0, v1))));
 }
 
 //! compute area of a triangle given by three points

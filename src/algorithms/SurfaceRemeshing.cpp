@@ -13,6 +13,10 @@
 #include "pmp/algorithms/BarycentricCoordinates.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
@@ -27,7 +31,7 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
 SurfaceRemeshing::~SurfaceRemeshing() = default;
 
 void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
-                                         unsigned int iterations,
+                                         uint32_t iterations,
                                          bool use_projection)
 {
     if (!mesh_.is_triangle_mesh())
@@ -42,7 +46,7 @@ void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
 
     preprocessing();
 
-    for (unsigned int i = 0; i < iterations; ++i)
+    for (uint32_t i = 0; i < iterations; ++i)
     {
         split_long_edges();
 
@@ -63,7 +67,7 @@ void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
 void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
                                           Scalar max_edge_length,
                                           Scalar approx_error,
-                                          unsigned int iterations,
+                                          uint32_t iterations,
                                           bool use_projection)
 {
     if (!mesh_.is_triangle_mesh())
@@ -80,7 +84,7 @@ void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
 
     preprocessing();
 
-    for (unsigned int i = 0; i < iterations; ++i)
+    for (uint32_t i = 0; i < iterations; ++i)
     {
         split_long_edges();
 
@@ -199,13 +203,13 @@ void SurfaceRemeshing::preprocessing()
                     c = vsizing_[mesh_.to_vertex(h)];
                     if (c > Scalar(0.0))
                     {
-                        w = std::max(0.0, cotan_weight(mesh_, mesh_.edge(h)));
+                        w = Scalar(std::max(0.0, cotan_weight(mesh_, mesh_.edge(h))));
                         ww += w;
                         cc += w * c;
                     }
                 }
 
-                if (ww)
+                if (ww > Scalar(0.0))
                     cc /= ww;
                 vsizing_[v] = cc;
             }
@@ -363,8 +367,8 @@ void SurfaceRemeshing::split_long_edges()
 
                 if (is_feature)
                 {
-                    enew = is_boundary ? Edge(mesh_.n_edges() - 2)
-                                       : Edge(mesh_.n_edges() - 3);
+                    enew = is_boundary ? Edge(IndexType(mesh_.n_edges() - 2))
+                                       : Edge(IndexType(mesh_.n_edges() - 3));
                     efeature_[enew] = true;
                     vfeature_[vnew] = true;
                 }
@@ -533,7 +537,7 @@ void SurfaceRemeshing::flip_edges()
     VertexProperty<int> valence = mesh_.add_vertex_property<int>("valence");
     for (auto v : mesh_.vertices())
     {
-        valence[v] = mesh_.valence(v);
+        valence[v] = int(mesh_.valence(v));
     }
 
     for (ok = false, i = 0; !ok && i < 10; ++i)
@@ -610,7 +614,7 @@ void SurfaceRemeshing::flip_edges()
     mesh_.remove_vertex_property(valence);
 }
 
-void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
+void SurfaceRemeshing::tangential_smoothing(uint32_t iterations)
 {
     Vertex v1, v2, v3, vv;
     Edge e;
@@ -633,7 +637,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
         }
     }
 
-    for (unsigned int iters = 0; iters < iterations; ++iters)
+    for (uint32_t iters = 0; iters < iterations; ++iters)
     {
         for (auto v : mesh_.vertices())
         {
@@ -766,7 +770,7 @@ void SurfaceRemeshing::remove_caps()
     Halfedge h;
     Vertex v, vb, vd;
     Face fb, fd;
-    Scalar a0, a1, amin, aa(::cos(170.0 * M_PI / 180.0));
+    Scalar a0, a1, amin, aa(std::cos(Scalar(170.0) * Scalar(M_PI) / Scalar(180.0)));
     Point a, b, c, d;
 
     for (auto e : mesh_.edges())
@@ -820,7 +824,7 @@ void SurfaceRemeshing::remove_caps()
 Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
 {
     // setup matrix of one-ring neighbors' positions
-    const unsigned int n = mesh_.valence(v);
+    const uint32_t n = uint32_t(mesh_.valence(v));
     Eigen::MatrixXd poly(n, 3);
     int i = 0;
     for (auto vv : mesh_.vertices(v))
@@ -833,7 +837,7 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
     H.setZero();
     Eigen::Vector3d J;
     J.setZero();
-    for (unsigned int i = 0; i < n; ++i)
+    for (uint32_t i = 0; i < n; ++i)
     {
         Eigen::Vector3d p = poly.row(i);
         Eigen::Vector3d q = poly.row((i + 1) % n);

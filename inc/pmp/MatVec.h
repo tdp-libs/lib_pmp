@@ -13,6 +13,10 @@
 
 #include <Eigen/Dense>
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238
+#endif
+
 namespace pmp {
 
 //! \addtogroup core
@@ -159,14 +163,14 @@ public:
         {
             assert(m.size() == size());
             for (int i = 0; i < size(); ++i)
-                (*this)[i] = m(i);
+                (*this)[i] = Scalar(m(i));
         }
         else
         {
             assert(m.rows() == rows() && m.cols() == cols());
             for (int i = 0; i < rows(); ++i)
                 for (int j = 0; j < cols(); ++j)
-                    (*this)(i, j) = m(i, j);
+                    (*this)(i, j) = Scalar(m(i, j));
         }
     }
 
@@ -188,14 +192,14 @@ public:
         {
             assert(m.size() == size());
             for (int i = 0; i < size(); ++i)
-                (*this)[i] = m(i);
+                (*this)[i] = Scalar(m(i));
         }
         else
         {
             assert(m.rows() == rows() && m.cols() == cols());
             for (int i = 0; i < rows(); ++i)
                 for (int j = 0; j < cols(); ++j)
-                    (*this)(i, j) = m(i, j);
+                    (*this)(i, j) = Scalar(m(i, j));
         }
         return *this;
     }
@@ -215,28 +219,28 @@ public:
     static Matrix<Scalar, M, N> identity();
 
     //! access entry at row i and column j
-    Scalar& operator()(unsigned int i, unsigned int j)
+    Scalar& operator()(uint32_t i, uint32_t j)
     {
         assert(i < M && j < N);
         return data_[M * j + i];
     }
 
     //! const-access entry at row i and column j
-    const Scalar& operator()(unsigned int i, unsigned int j) const
+    const Scalar& operator()(uint32_t i, uint32_t j) const
     {
         assert(i < M && j < N);
         return data_[M * j + i];
     }
 
     //! access i'th entry (use for vectors)
-    Scalar& operator[](unsigned int i)
+    Scalar& operator[](uint32_t i)
     {
         assert(i < M * N);
         return data_[i];
     }
 
     //! const-access i'th entry (use for vectors)
-    Scalar operator[](unsigned int i) const
+    Scalar operator[](uint32_t i) const
     {
         assert(i < M * N);
         return data_[i];
@@ -334,8 +338,8 @@ typedef Vector<double, 2> dvec2;
 typedef Vector<bool, 2> bvec2;
 //! template specialization for a vector of two int values
 typedef Vector<int, 2> ivec2;
-//! template specialization for a vector of two unsigned int values
-typedef Vector<unsigned int, 2> uvec2;
+//! template specialization for a vector of two uint32_t values
+typedef Vector<uint32_t, 2> uvec2;
 
 //! template specialization for a vector of three float values
 typedef Vector<float, 3> vec3;
@@ -345,8 +349,8 @@ typedef Vector<double, 3> dvec3;
 typedef Vector<bool, 3> bvec3;
 //! template specialization for a vector of three int values
 typedef Vector<int, 3> ivec3;
-//! template specialization for a vector of three unsigned int values
-typedef Vector<unsigned int, 3> uvec3;
+//! template specialization for a vector of three uint32_t values
+typedef Vector<uint32_t, 3> uvec3;
 
 //! template specialization for a vector of four float values
 typedef Vector<float, 4> vec4;
@@ -356,8 +360,8 @@ typedef Vector<double, 4> dvec4;
 typedef Vector<bool, 4> bvec4;
 //! template specialization for a vector of four int values
 typedef Vector<int, 4> ivec4;
-//! template specialization for a vector of four unsigned int values
-typedef Vector<unsigned int, 4> uvec4;
+//! template specialization for a vector of four uint32_t values
+typedef Vector<uint32_t, 4> uvec4;
 
 //! template specialization for a vector of four float values
 typedef Vector<float, 8> vec8;
@@ -367,8 +371,8 @@ typedef Vector<double, 8> dvec8;
 typedef Vector<bool, 8> bvec8;
 //! template specialization for a vector of four int values
 typedef Vector<int, 8> ivec8;
-//! template specialization for a vector of four unsigned int values
-typedef Vector<unsigned int, 8> uvec8;
+//! template specialization for a vector of four uint32_t values
+typedef Vector<uint32_t, 8> uvec8;
 
 //! template specialization for a 2x2 matrix of float values
 typedef Mat2<float> mat2;
@@ -494,7 +498,7 @@ template <typename Scalar, typename Scalar2, int M, int N>
 inline Matrix<Scalar, M, N> operator*(const Scalar2 s,
                                       const Matrix<Scalar, M, N>& m)
 {
-    return Matrix<Scalar, M, N>(m) *= s;
+    return Matrix<Scalar, M, N>(m) *= Scalar(s);
 }
 
 //! scalar multiplication of matrix: m*s
@@ -989,7 +993,7 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
                                   Vector<Scalar, 3>& evec2,
                                   Vector<Scalar, 3>& evec3)
 {
-    unsigned int i, j;
+    uint32_t i, j;
     Scalar theta, t, c, s;
     Mat3<Scalar> V = Mat3<Scalar>::identity();
     Mat3<Scalar> R;
@@ -1004,22 +1008,26 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
         {
             if (fabs(A(0, 2)) < fabs(A(1, 2)))
             {
-                i = 1, j = 2;
+                i = 1;
+                j = 2;
             }
             else
             {
-                i = 0, j = 2;
+                i = 0;
+                j = 2;
             }
         }
         else
         {
             if (fabs(A(0, 1)) < fabs(A(1, 2)))
             {
-                i = 1, j = 2;
+                i = 1;
+                j = 2;
             }
             else
             {
-                i = 0, j = 1;
+                i = 0;
+                j = 1;
             }
         }
 
@@ -1055,17 +1063,23 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
         {
             if (d[1] > d[2])
             {
-                sorted[0] = 0, sorted[1] = 1, sorted[2] = 2;
+                sorted[0] = 0;
+                sorted[1] = 1;
+                sorted[2] = 2;
             }
             else
             {
                 if (d[0] > d[2])
                 {
-                    sorted[0] = 0, sorted[1] = 2, sorted[2] = 1;
+                    sorted[0] = 0;
+                    sorted[1] = 2;
+                    sorted[2] = 1;
                 }
                 else
                 {
-                    sorted[0] = 2, sorted[1] = 0, sorted[2] = 1;
+                    sorted[0] = 2;
+                    sorted[1] = 0;
+                    sorted[2] = 1;
                 }
             }
         }
@@ -1073,17 +1087,23 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
         {
             if (d[0] > d[2])
             {
-                sorted[0] = 1, sorted[1] = 0, sorted[2] = 2;
+                sorted[0] = 1;
+                sorted[1] = 0;
+                sorted[2] = 2;
             }
             else
             {
                 if (d[1] > d[2])
                 {
-                    sorted[0] = 1, sorted[1] = 2, sorted[2] = 0;
+                    sorted[0] = 1;
+                    sorted[1] = 2;
+                    sorted[2] = 0;
                 }
                 else
                 {
-                    sorted[0] = 2, sorted[1] = 1, sorted[2] = 0;
+                    sorted[0] = 2;
+                    sorted[1] = 1;
+                    sorted[2] = 0;
                 }
             }
         }
