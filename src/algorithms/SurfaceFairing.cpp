@@ -123,6 +123,13 @@ void SurfaceFairing::fair(unsigned int k)
 
     // construct matrix & rhs
     const unsigned int n = uint32_t(vertices.size());
+
+    if(n<1)
+    {
+      std::cerr << "SurfaceFairing: n < 0\n";
+      return;
+    }
+
     SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
     dvec3 b;
@@ -141,7 +148,7 @@ void SurfaceFairing::fair(unsigned int k)
             auto v = r.first;
             auto w = r.second;
 
-            if (idx_[v] != -1)
+            if (idx_[v]>=0 && idx_[v]<int(n))
             {
                 triplets.emplace_back(i, idx_[v], w);
             }
@@ -152,6 +159,12 @@ void SurfaceFairing::fair(unsigned int k)
         }
 
         B.row(i) = Eigen::Vector3d(b);
+    }
+
+    if(A.rows() < 1 || A.cols() < 1)
+    {
+      std::cerr << "SurfaceFairing: A.rows() < 1 || A.cols() < 1\n";
+      return;
     }
 
     A.setFromTriplets(triplets.begin(), triplets.end());

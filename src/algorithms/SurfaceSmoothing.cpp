@@ -160,6 +160,12 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
   }
   const uint32_t n = uint32_t(free_vertices.size());
 
+  if(n<1)
+  {
+    std::cerr << "SurfaceSmoothing: n < 1\n";
+    return;
+  }
+
   // A*X = B
   SparseMatrix A(n, n);
   Eigen::MatrixXd B(n, 3);
@@ -203,6 +209,12 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
 
     // center vertex -> matrix
     triplets.emplace_back(i, i, 1.0 / double(vweight[v]) + double(timestep) * ww);
+  }
+
+  if(A.rows() < 1 || A.cols() < 1)
+  {
+    std::cerr << "SurfaceSmoothing: A.rows() < 1 || A.cols() < 1\n";
+    return;
   }
 
   // build sparse matrix from triplets

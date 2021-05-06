@@ -322,6 +322,12 @@ void SurfaceParameterization::lscm()
     double si, sj0, sj1, sign;
     int row(0), c0, c1;
 
+    if(n<1)
+    {
+      std::cerr << "SurfaceParameterization: n < 1\n";
+      return;
+    }
+
     Eigen::SparseMatrix<double> A(2 * n, 2 * n);
     Eigen::VectorXd b = Eigen::VectorXd::Zero(2 * n);
     std::vector<Eigen::Triplet<double>> triplets;
@@ -389,6 +395,12 @@ void SurfaceParameterization::lscm()
 
             ++row;
         }
+    }
+
+    if(A.rows() < 1 || A.cols() < 1)
+    {
+      std::cerr << "SurfaceParameterization: A.rows() < 1 || A.cols() < 1\n";
+      return;
     }
 
     // build sparse matrix from triplets

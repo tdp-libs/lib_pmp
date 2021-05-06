@@ -432,6 +432,12 @@ void SurfaceHoleFilling::relaxation()
         B.row(i) = Eigen::Vector3d(b);
     }
 
+    if(m<1 || n<1)
+    {
+      std::cerr << "[SurfaceHoleFilling] m or n < 1\n";
+      return;
+    }
+
     // solve least squares system
     SparseMatrix A(m, n);
     A.setFromTriplets(triplets.begin(), triplets.end());
