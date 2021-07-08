@@ -5,6 +5,8 @@
 
 #include "pmp/SurfaceMesh.h"
 
+#include "lib_platform/Globals.h"
+
 namespace pmp {
 
 //! \brief A class for Laplacian smoothing
@@ -12,6 +14,7 @@ namespace pmp {
 //! \ingroup algorithms
 class SurfaceSmoothing
 {
+  LIB_PLATFORM_NONCOPYABLE(SurfaceSmoothing);
 public:
     //! Construct with mesh to be smoothed.
     SurfaceSmoothing(SurfaceMesh& mesh);

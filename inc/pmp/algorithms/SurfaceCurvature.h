@@ -5,6 +5,8 @@
 
 #include "pmp/SurfaceMesh.h"
 
+#include "lib_platform/Globals.h"
+
 namespace pmp {
 
 //! \brief Compute per-vertex curvature (min,max,mean,Gaussian).
@@ -15,6 +17,7 @@ namespace pmp {
 //! \ingroup algorithms
 class SurfaceCurvature
 {
+  LIB_PLATFORM_NONCOPYABLE(SurfaceCurvature);
 public:
     //! construct with mesh to be analyzed
     SurfaceCurvature(SurfaceMesh& mesh);

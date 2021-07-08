@@ -3,9 +3,11 @@
 
 #pragma once
 
-#include <map>
-
 #include "pmp/SurfaceMesh.h"
+
+#include "lib_platform/Globals.h"
+
+#include <map>
 
 namespace pmp {
 
@@ -14,6 +16,7 @@ namespace pmp {
 //! \ingroup algorithms
 class SurfaceFairing
 {
+  LIB_PLATFORM_NONCOPYABLE(SurfaceFairing);
 public:
     //! Construct with mesh to be processed.
     SurfaceFairing(SurfaceMesh& mesh);
