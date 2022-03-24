@@ -3,8 +3,8 @@
 
 #include "pmp/algorithms/SurfaceFairing.h"
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
+#include "Eigen/Dense"
+#include "Eigen/Sparse"
 
 #include "pmp/algorithms/DifferentialGeometry.h"
 
