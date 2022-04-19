@@ -214,8 +214,8 @@ void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
             // normalize tensor by accumulated
             tensor /= A;
 
-            // Eigen-descene
-            bool ok = symmetric_eigendescene(tensor, eval1, eval2, eval3,
+            // Eigen-decomposition
+            bool ok = symmetric_eigendecomposition(tensor, eval1, eval2, eval3,
                                                    evec1, evec2, evec3);
             if (ok)
             {

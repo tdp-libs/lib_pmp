@@ -985,9 +985,9 @@ Mat3<Scalar> inverse(const Mat3<Scalar>& m)
     return inv;
 }
 
-//! compute eigenvector/eigenvalue descene of a 3x3 matrix
+//! compute eigenvector/eigenvalue decomposition of a 3x3 matrix
 template <typename Scalar>
-bool symmetric_eigendescene(const Mat3<Scalar>& m, Scalar& eval1,
+bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
                                   Scalar& eval2, Scalar& eval3,
                                   Vector<Scalar, 3>& evec1,
                                   Vector<Scalar, 3>& evec2,
