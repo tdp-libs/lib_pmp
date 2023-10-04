@@ -240,7 +240,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
   {
     // restore original surface area
     Scalar area_after = surface_area(mesh_);
-    Scalar scale = sqrt(area_before / area_after);
+    Scalar scale = std::sqrt(area_before / area_after);
     for (auto v : mesh_.vertices())
       mesh_.position(v) *= scale;
 

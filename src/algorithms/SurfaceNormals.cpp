@@ -65,7 +65,7 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
                 p2 -= p0;
 
                 // check whether we can robustly compute angle
-                denom = sqrt(dot(p1, p1) * dot(p2, p2));
+                denom = std::sqrt(dot(p1, p1) * dot(p2, p2));
                 if (denom > std::numeric_limits<Scalar>::min())
                 {
                     cosine = dot(p1, p2) / denom;
@@ -106,7 +106,7 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
     if (crease_angle < Scalar(0.001))
         crease_angle = Scalar(0.001);
 
-    const Scalar cos_crease_angle = cos(crease_angle);
+    const Scalar cos_crease_angle = std::cos(crease_angle);
     Point nn(0, 0, 0);
 
     if (!mesh.is_boundary(h))
@@ -144,7 +144,7 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                 if (dot(n, nf) >= cos_crease_angle)
                 {
                     // check whether we can robustly compute angle
-                    denom = sqrt(dot(p1, p1) * dot(p2, p2));
+                    denom = std::sqrt(dot(p1, p1) * dot(p2, p2));
                     if (denom > std::numeric_limits<Scalar>::min())
                     {
                         cosine = dot(p1, p2) / denom;
@@ -152,7 +152,7 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                             cosine = Scalar(-1.0);
                         else if (cosine > Scalar(1.0))
                             cosine = Scalar(1.0);
-                        angle = acos(cosine);
+                        angle = std::acos(cosine);
 
                         n *= angle;
                         nn += n;

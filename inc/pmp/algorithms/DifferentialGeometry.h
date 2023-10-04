@@ -28,7 +28,7 @@ inline double clamp_cos(const double v)
 //! compute angle between two (un-normalized) vectors
 inline Scalar angle(const Point& v0, const Point& v1)
 {
-    return atan2(norm(cross(v0, v1)), dot(v0, v1));
+    return std::atan2(norm(cross(v0, v1)), dot(v0, v1));
 }
 
 //! compute sine of angle between two (un-normalized) vectors

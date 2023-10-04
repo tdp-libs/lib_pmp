@@ -36,7 +36,7 @@ public: // clang-format off
     //! construct from point and normal specifying a plane
     Quadric(const Normal& n, const Point& p)
     {
-        *this = Quadric(n[0], n[1], n[2], -dot(n,p));
+        *this = Quadric(double(n[0]), double(n[1]), double(n[2]), double(-dot(n,p)));
     }
 
     //! set all matrix entries to zero
@@ -65,7 +65,7 @@ public: // clang-format off
     //! evaluate quadric Q at position p by computing (p^T * Q * p)
     double operator()(const Point& p) const
     {
-        const double x(p[0]), y(p[1]), z(p[2]);
+        const double x = double(p[0]), y = double(p[1]), z = double(p[2]);
         return a_*x*x + 2.0*b_*x*y + 2.0*c_*x*z + 2.0*d_*x
             +  e_*y*y + 2.0*f_*y*z + 2.0*g_*y
             +  h_*z*z + 2.0*i_*z

@@ -38,7 +38,7 @@ void SurfaceFeatures::detect_boundary()
 
 void SurfaceFeatures::detect_angle(Scalar angle)
 {
-    const Scalar feature_cosine = cos(angle / Scalar(180.0) * Scalar(M_PI));
+    const Scalar feature_cosine = std::cos(angle / Scalar(180.0) * Scalar(M_PI));
 
     for (auto e : mesh_.edges())
     {

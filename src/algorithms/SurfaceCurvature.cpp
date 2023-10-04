@@ -76,7 +76,7 @@ void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
             mean = Scalar(0.5) * norm(laplace);
             gauss = (Scalar(2.0) * Scalar(M_PI) - sum_angles) / area;
 
-            const Scalar s = sqrt(std::max(Scalar(0.0), mean * mean - gauss));
+            const Scalar s = std::sqrt(std::max(Scalar(0.0), mean * mean - gauss));
             kmin = mean - s;
             kmax = mean + s;
         }
@@ -330,7 +330,7 @@ void SurfaceCurvature::mean_curvature_to_texture_coordinates() const
     auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
     for (auto v : mesh_.vertices())
     {
-        curvatures[v] = fabs(mean_curvature(v));
+        curvatures[v] = std::abs(mean_curvature(v));
     }
     curvature_to_texture_coordinates();
     mesh_.remove_vertex_property<Scalar>(curvatures);
@@ -382,7 +382,7 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
     auto tex = mesh_.vertex_property<TexCoord>("v:tex");
     if (kmin < Scalar(0.0)) // signed
     {
-        kmax = std::max(fabs(kmin), fabs(kmax));
+        kmax = std::max(std::abs(kmin), std::abs(kmax));
         for (auto v : mesh_.vertices())
         {
             tex[v] = TexCoord((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);

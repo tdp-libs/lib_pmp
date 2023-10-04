@@ -514,14 +514,14 @@ template <typename Scalar, typename Scalar2, int M, int N>
 inline Matrix<Scalar, M, N> operator/(const Matrix<Scalar, M, N>& m,
                                       const Scalar2 s)
 {
-    return Matrix<Scalar, M, N>(m) /= s;
+    return Matrix<Scalar, M, N>(m) /= Scalar(s);
 }
 
 //! compute the Frobenius norm of a matrix (or Euclidean norm of a vector)
 template <typename Scalar, int M, int N>
 inline Scalar norm(const Matrix<Scalar, M, N>& m)
 {
-    return sqrt(sqrnorm(m));
+    return std::sqrt(sqrnorm(m));
 }
 
 //! compute the squared Frobenius norm of a matrix (or squared Euclidean norm of a vector)
@@ -1164,7 +1164,7 @@ inline Scalar distance(const Vector<Scalar, N>& v0, const Vector<Scalar, N>& v1)
         d *= d;
         dist += d;
     }
-    return Scalar(sqrt(dist));
+    return Scalar(std::sqrt(dist));
 }
 
 //! compute perpendicular vector (rotate vector by 90 degrees)

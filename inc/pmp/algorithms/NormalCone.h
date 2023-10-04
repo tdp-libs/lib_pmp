@@ -56,16 +56,16 @@ public:
         else
         {
             // new angle
-            Scalar center_angle = acos(dp);
+            Scalar center_angle = std::acos(dp);
             Scalar min_angle = std::min(-angle_, center_angle - nc.angle_);
             Scalar max_angle = std::max(angle_, center_angle + nc.angle_);
             angle_ = Scalar(0.5) * (max_angle - min_angle);
 
             // axis by SLERP
             Scalar axis_angle = Scalar(0.5) * (min_angle + max_angle);
-            center_normal_ = ((center_normal_ * sin(center_angle - axis_angle) +
-                               nc.center_normal_ * sin(axis_angle)) /
-                              sin(center_angle));
+            center_normal_ = ((center_normal_ * std::sin(center_angle - axis_angle) +
+                               nc.center_normal_ * std::sin(axis_angle)) /
+                               std::sin(center_angle));
         }
 
         return *this;

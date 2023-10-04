@@ -271,7 +271,7 @@ VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v)
         c.mean = Scalar(0.5) * norm(laplace(mesh, v));
         c.gauss = (Scalar(2.0) * Scalar(M_PI) - angle_sum(mesh, v)) / area;
 
-        const Scalar s = sqrt(std::max(Scalar(0.0), c.mean * c.mean - c.gauss));
+        const Scalar s = std::sqrt(std::max(Scalar(0.0), c.mean * c.mean - c.gauss));
         c.min = c.mean - s;
         c.max = c.mean + s;
 

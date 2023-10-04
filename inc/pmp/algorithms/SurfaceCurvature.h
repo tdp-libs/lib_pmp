@@ -55,7 +55,7 @@ public:
     //! return maximum absolute curvature
     Scalar max_abs_curvature(Vertex v) const
     {
-        return std::max(fabs(min_curvature_[v]), fabs(max_curvature_[v]));
+        return std::max(std::abs(min_curvature_[v]), std::abs(max_curvature_[v]));
     }
 
     //! convert (precomputed) mean curvature to 1D texture coordinates

@@ -143,7 +143,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
         {
             vv = mesh_.to_vertex(h);
             e = mesh_.edge(h);
-            w = eweight[e];
+            w = double(eweight[e]);
             ww += w;
 
             if (mesh_.is_boundary(vv))

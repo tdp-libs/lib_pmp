@@ -36,7 +36,7 @@ void SurfaceGeodesic::find_virtual_edges()
 
     const Scalar one(1.0), minus_one(-1.0);
     const Scalar max_angle = Scalar(90.0 / 180.0 * M_PI);
-    const Scalar max_angle_cos = cos(max_angle);
+    const Scalar max_angle_cos = std::cos(max_angle);
 
     virtual_edges_.clear();
 
@@ -63,7 +63,7 @@ void SurfaceGeodesic::find_virtual_edges()
                     // compute angles
                     alpha = Scalar(0.5) * std::acos(std::min(one, std::max(minus_one, dot(d0, d1))));
                     beta = max_angle - alpha;
-                    tan_beta = tan(beta);
+                    tan_beta = std::tan(beta);
 
                     // coord system
                     X = normalize(d0 + d1);
@@ -380,8 +380,8 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         C = mesh_.position(v2);
         TA = double(distance_[v0]);
         TB = double(distance_[v1]);
-        a = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(B, C) : r1;
-        b = r0 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r0;
+        a = r1 == std::numeric_limits<Scalar>::max() ? double(pmp::distance(B, C)) : double(r1);
+        b = r0 == std::numeric_limits<Scalar>::max() ? double(pmp::distance(A, C)) : double(r0);
     }
     else
     {
@@ -390,8 +390,8 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         C = mesh_.position(v2);
         TA = double(distance_[v1]);
         TB = double(distance_[v0]);
-        a = r0 == std::numeric_limits<Scalar>::max() ? pmp::distance(B, C) : r0;
-        b = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r1;
+        a = r0 == std::numeric_limits<Scalar>::max() ? double(pmp::distance(B, C)) : double(r0);
+        b = r1 == std::numeric_limits<Scalar>::max() ? double(pmp::distance(A, C)) : double(r1);
     }
 
     // Dykstra: propagate along edges
