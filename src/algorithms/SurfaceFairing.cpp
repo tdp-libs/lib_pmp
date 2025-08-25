@@ -1,3 +1,8 @@
+
+#if __clang_major__ >= 14
+#pragma clang diagnostic ignored "-Wdeprecated-anon-enum-enum-conversion" // avoids warning in eigen headers
+#endif
+
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
